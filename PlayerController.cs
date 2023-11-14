@@ -5,8 +5,11 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float horizontalInput;
+    public float verticalInput;
     public float speed = 15.0f;
     public float xRange = 10.0f;
+    public float zBoundaryBottom = 1.0f;
+    public float zBoundaryTop = 15.0f;
     public GameObject projectilePrefab;
 
     void Start()
@@ -26,9 +29,17 @@ public class PlayerController : MonoBehaviour
         {
             transform.position = new Vector3(xRange, transform.position.y, transform.position.z);
         }
+        if (transform.position.z < -zBoundaryBottom)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, -zBoundaryBottom);
+        }
+        if (transform.position.z > zBoundaryTop)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, zBoundaryTop);
+        }
 
-        // Shoots a sandwich out of the player when space is pressed
-        if (Input.GetKeyDown(KeyCode.Space))
+            // Shoots a sandwich out of the player when space is pressed
+            if (Input.GetKeyDown(KeyCode.Space))
         {
             // Launch a projectile from the player
             Instantiate(projectilePrefab, transform.position, projectilePrefab.transform.rotation);
@@ -37,5 +48,9 @@ public class PlayerController : MonoBehaviour
         // Moves player left and right based on horizontal controls
         horizontalInput = Input.GetAxis("Horizontal");
         transform.Translate(Vector3.right * Time.deltaTime * horizontalInput * speed);
+
+        // Moves player forward and backward based on vertical controls
+        verticalInput = Input.GetAxis("Vertical");
+        transform.Translate(Vector3.forward * Time.deltaTime * verticalInput * speed);
     }
 }
